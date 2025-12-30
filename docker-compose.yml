@@ -21,6 +21,7 @@ services:
       - WEBHOOK_RETRY_DELAY=${WEBHOOK_RETRY_DELAY}
       - WEBHOOK_HEADERS=${WEBHOOK_HEADERS}
       - OPENAPI_ENABLED=${OPENAPI_ENABLED}
+      - SCRAPE_DO_API_KEY=${SCRAPE_DO_API_KEY}
     ports:
       - "${PORT}:${PORT}"
     networks:
