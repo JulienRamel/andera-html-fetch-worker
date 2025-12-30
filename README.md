@@ -32,7 +32,7 @@ Learn more: [Andera Documentation](https://andera.top/docs/)
 ### Installation
 
 ```sh
-git clone <your-repo-url>
+git clone git@github.com:JulienRamel/andera-html-fetch-worker.git
 cd html-fetch-worker
 cp .env.example .env
 npm install
