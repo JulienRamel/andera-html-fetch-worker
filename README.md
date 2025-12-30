@@ -4,7 +4,7 @@
 
 # Andera HTML Fetch Worker
 
-This repository is an [Andera](https://andera.top) Worker built to fetch HTML content from web pages using [Playwright](https://playwright.dev). The Worker creates slots with Chrome contexts, assigns requests to each context, and resets them once the HTML has been fetched.
+This repository is an [Andera](https://andera.top) Worker built to fetch HTML content from web pages using [Playwright](https://playwright.dev). The Worker creates slots with Chrome contexts, assigns requests to each context, and resets them once the HTML has been fetched. It also supports an automatic fallback to [scrape.do](https://scrape.do) for accessing content protected by antibot systems (Cloudflare, Akamai, DataDome, etc.).
 
 **Andera** is a high-performance, open-source Task Orchestration Platform (TOP) designed for simplicity, flexibility, and scalability. It enables you to build, run, and manage distributed workers for any kind of task, from AI agents to automation scripts.
 
@@ -133,6 +133,7 @@ curl -X POST http://localhost:3000/task \
 | waitForSelector  | string   | (none)     | If set, waits for this CSS selector to appear before fetching HTML.         |
 | delay            | number   | 0          | Delay in milliseconds to wait before fetching HTML.                         |
 | userAgent        | string   | (none)     | Custom User-Agent string. Uses Playwright default if not specified.         |
+| antibotFallback  | boolean  | false      | If true, uses [scrape.do](https://scrape.do) as fallback when the request fails (except 404). See [Antibot Fallback](#antibot-fallback) below. |
 
 **Example:**
 ```json
@@ -159,6 +160,52 @@ curl -X POST http://localhost:3000/task \
   }
 }
 ```
+
+---
+
+### Antibot Fallback
+
+Some websites implement antibot protections (Cloudflare, Akamai, DataDome, etc.) that block standard browser requests. When enabled, the `antibotFallback` option provides automatic fallback to [scrape.do](https://scrape.do) when a request fails.
+
+**How it works:**
+- When `antibotFallback: true` is set and the initial Playwright request fails (non-2xx status code, timeout, blocked, etc.), the worker automatically retries using the scrape.do API.
+- **404 errors are excluded** from fallback — if a page genuinely doesn't exist, the fallback is not triggered.
+- The response will include `antibotFallbackUsed: true` when scrape.do was used.
+
+**Configuration:**
+
+Add your scrape.do API key to your `.env` file:
+
+```env
+SCRAPE_DO_API_KEY=your_api_key_here
+```
+
+**Example with antibot fallback:**
+```json
+{
+  "function": "fetchHtml",
+  "input": {
+    "url": "https://protected-website.com",
+    "antibotFallback": true
+  },
+  "contract": 1,
+  "mode": "sync"
+}
+```
+
+**Response when fallback is used:**
+```json
+{
+  "success": true,
+  "result": {
+    "html": "<!DOCTYPE html>...",
+    "url": "https://protected-website.com",
+    "antibotFallbackUsed": true
+  }
+}
+```
+
+> **Note:** Using the antibot fallback requires a valid (even free) [scrape.do](https://scrape.do) subscription. The fallback allows scraping any page, even those protected by antibot systems like Cloudflare, Akamai, or DataDome.
 
 ---
 
