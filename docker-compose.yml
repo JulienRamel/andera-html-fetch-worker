@@ -1,0 +1,33 @@
+services:
+  julienramel-andera-html-fetch-worker:
+    image: julienramel/andera-html-fetch-worker
+    build:
+      context: .
+      dockerfile: Dockerfile
+    shm_size: '4gb'
+    environment:
+      - AUTH_KEY=${AUTH_KEY}
+      - LB_AUTH_KEY=${LB_AUTH_KEY}
+      - PORT=${PORT}
+      - WEBSOCKET_PORT=${WEBSOCKET_PORT}
+      - GROUP=${GROUP}
+      - CONTRACT=${CONTRACT}
+      - SLOTS=${SLOTS}
+      - DEFAULT_TIMEOUT=${DEFAULT_TIMEOUT}
+      - LOG_LEVEL=${LOG_LEVEL}
+      - MAX_LOGS=${MAX_LOGS}
+      - WEBHOOK_TIMEOUT=${WEBHOOK_TIMEOUT}
+      - WEBHOOK_MAX_RETRIES=${WEBHOOK_MAX_RETRIES}
+      - WEBHOOK_RETRY_DELAY=${WEBHOOK_RETRY_DELAY}
+      - WEBHOOK_HEADERS=${WEBHOOK_HEADERS}
+      - OPENAPI_ENABLED=${OPENAPI_ENABLED}
+    ports:
+      - "${PORT}:${PORT}"
+    networks:
+      - andera-net
+    command: node dist/app.js
+
+networks:
+  andera-net:
+    external: true
+

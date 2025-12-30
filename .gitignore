@@ -1,0 +1,36 @@
+# Node modules
+/node_modules/
+
+# TypeScript output
+/dist/
+
+# Log files
+*.log
+
+# Environment variables
+/.env
+
+# npm and Yarn
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# VS Code settings
+.vscode/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Optional npm cache directory
+.npm/
+
+# TypeScript declaration files
+*.d.ts
+
+# Examples
+/src/functions/*.example.ts
+/src/tags/*.example.ts
+/src/services/*.example.ts
+/src/helpers/*.example.ts
+
