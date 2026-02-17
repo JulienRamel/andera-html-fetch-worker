@@ -23,7 +23,7 @@ services:
       - OPENAPI_ENABLED=${OPENAPI_ENABLED}
       - SCRAPE_DO_API_KEY=${SCRAPE_DO_API_KEY}
     ports:
-      - "${PORT}:${PORT}"
+      - "127.0.0.1:${PORT}:${PORT}"
     networks:
       - andera-net
     command: node dist/app.js
