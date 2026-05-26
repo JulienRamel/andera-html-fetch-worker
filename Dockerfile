@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/playwright:v1.52.0-jammy AS builder
+FROM mcr.microsoft.com/playwright:v1.60.0-jammy AS builder
 
 WORKDIR /app
 
@@ -8,7 +8,7 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-FROM mcr.microsoft.com/playwright:v1.52.0-jammy
+FROM mcr.microsoft.com/playwright:v1.60.0-jammy
 
 WORKDIR /app
 
