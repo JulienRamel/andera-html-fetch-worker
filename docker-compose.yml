@@ -1,6 +1,7 @@
 services:
   julienramel-andera-html-fetch-worker:
     image: julienramel/andera-html-fetch-worker
+    restart: unless-stopped
     build:
       context: .
       dockerfile: Dockerfile
