@@ -25,7 +25,7 @@ Learn more: [Andera Documentation](https://andera.top/docs/)
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) (v18+ recommended)
+- [Node.js](https://nodejs.org/) (Node 24 LTS recommended, 24.22.1+; Docker uses the Playwright 1.64.1 image with Node 24.22.1)
 - [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
 - [Docker](https://www.docker.com/) (optional, for containerized deployment)
 
