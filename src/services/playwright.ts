@@ -23,7 +23,7 @@ export default defineService({
       for (let i = 0; i < config.worker.slots; i++) {
         const contextOptions = {
           ...(config.htmlFetchWorkerSpecificConfig.allowIgnoreSslErrors ? { ignoreHTTPSErrors: true } : {}),
-          userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+          userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         }
         const context = await browser.newContext(contextOptions)
         contexts.push(context)
@@ -32,7 +32,10 @@ export default defineService({
       }
 
       browserVersion = browser.version()
-      log('[PLAYWRIGHT]', `${config.worker.slots} contexts opened and ready${config.htmlFetchWorkerSpecificConfig.allowIgnoreSslErrors ? ' (SSL errors ignored)' : ''}`)
+      log(
+        '[PLAYWRIGHT]',
+        `${config.worker.slots} contexts opened and ready${config.htmlFetchWorkerSpecificConfig.allowIgnoreSslErrors ? ' (SSL errors ignored)' : ''}`
+      )
 
       // Periodically force-release contexts that are stuck as busy for too long
       setInterval(() => {

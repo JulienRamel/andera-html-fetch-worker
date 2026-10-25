@@ -25,7 +25,7 @@ async function fetchWithScrapeDo(url: string): Promise<string> {
   }
   const scrapeDoUrl = `https://api.scrape.do/?token=${apiKey}&url=${encodeURIComponent(url)}&output=raw`
   log('[FETCH_HTML]', `Using scrape.do fallback for url=${url}`)
-  
+
   const response = await fetch(scrapeDoUrl)
   if (!response.ok) {
     throw new Error(`[FETCH_HTML] scrape.do request failed with status ${response.status}`)
@@ -50,7 +50,10 @@ export const fetchHtml = defineFunction({
     const { url, waitForSelector, delay, userAgent, antibotFallback } = params
     validateUrlBasic(url)
 
-    log('[FETCH_HTML]', `Fetching HTML: url=${url}, waitForSelector=${waitForSelector}, delay=${delay}, userAgent=${userAgent ? 'custom' : 'default'}, antibotFallback=${antibotFallback ?? false}`)
+    log(
+      '[FETCH_HTML]',
+      `Fetching HTML: url=${url}, waitForSelector=${waitForSelector}, delay=${delay}, userAgent=${userAgent ? 'custom' : 'default'}, antibotFallback=${antibotFallback ?? false}`
+    )
 
     // Get a free Playwright context (slot) from the pool
     const slot = await getFreeContext()
