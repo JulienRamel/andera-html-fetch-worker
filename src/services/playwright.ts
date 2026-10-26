@@ -11,11 +11,15 @@ export const contexts: BrowserContext[] = []
 export const contextStatus: ('free' | 'busy')[] = []
 export const contextBusySince: (number | null)[] = []
 export let browserVersion: string | null = null
+let cleanupTimer: ReturnType<typeof setInterval> | null = null
 
 export default defineService({
   config: { restartOnFailure: true },
   start: async () => {
     try {
+      // A failed start is retried without stop(): discard any partial state first.
+      await closeBrowser()
+
       // Launch Chromium (Chrome for Testing)
       browser = await chromium.launch({ headless: true })
 
@@ -38,7 +42,7 @@ export default defineService({
       )
 
       // Periodically force-release contexts that are stuck as busy for too long
-      setInterval(() => {
+      cleanupTimer = setInterval(() => {
         const now = Date.now()
         const timeoutLimit = config.worker.defaultTimeout ?? 30000
         for (let i = 0; i < contextStatus.length; i++) {
@@ -57,19 +61,29 @@ export default defineService({
     }
   },
   stop: async () => {
-    if (browser) await browser.close()
-    browser = null
-    contexts.length = 0
-    contextStatus.length = 0
-    contextBusySince.length = 0
+    await closeBrowser()
     log('[PLAYWRIGHT]', 'Closed')
   },
-  status: async () => ({
-    browser: !!browser,
-    freeContexts: contextStatus.filter(s => s === 'free').length,
-    busyContexts: contextStatus.filter(s => s === 'busy').length,
-  }),
+  status: async () => {
+    // Throwing marks the service down, so Worker Core stops and restarts it.
+    if (!browser?.isConnected()) throw new Error('Browser disconnected')
+    return {
+      browser: true,
+      freeContexts: contextStatus.filter(s => s === 'free').length,
+      busyContexts: contextStatus.filter(s => s === 'busy').length,
+    }
+  },
 }) as any
+
+async function closeBrowser() {
+  if (cleanupTimer) clearInterval(cleanupTimer)
+  cleanupTimer = null
+  if (browser) await browser.close().catch(() => {})
+  browser = null
+  contexts.length = 0
+  contextStatus.length = 0
+  contextBusySince.length = 0
+}
 
 // Expose the browser for helpers
 Object.defineProperty(exports.default, 'browser', {
